@@ -1,0 +1,7 @@
+{
+	"extends": "tslint:recommended",
+	"rules": {
+		"ordered-imports": true,
+		"quotemark": [true, "single", "avoid-escape"]
+	}
+}

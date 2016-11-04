@@ -1,0 +1,38 @@
+{
+  "name": "tslintify",
+  "description": "Browserify plugin for linting TypeScript files.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Tim Kang <timkang@ucla.edu>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timothykang/tslintify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/timothykang/tslintify/issues"
+  },
+  "homepage": "https://github.com/timothykang/tslintify#readme",
+  "keywords": [
+    "browserify-plugin",
+    "tslint",
+    "typescript"
+  ],
+  "main": "dist/tslintify.js",
+  "peerDependencies": {
+    "browserify": ">=12.0.0",
+    "tslint": ">=3.14.0",
+    "typescript": ">=2.0.2"
+  },
+  "devDependencies": {
+    "@types/browserify": ">=12.0.30",
+    "@types/node": "^6.0.31",
+    "tslint": ">=3.14.0",
+    "typescript": ">=2.0.2"
+  },
+  "scripts": {
+    "build": "mkdir -p dist && tsc",
+    "lint": "tslint --force --format=stylish src/tslintify.ts",
+    "prepublish": "npm run build",
+    "watch": "mkdir -p dist && tsc --watch"
+  }
+}
