@@ -1,6 +1,6 @@
 {
   "name": "tslintify",
-  "description": "Browserify plugin for linting TypeScript files.",
+  "description": "Browserify plugin for linting TypeScript.",
   "version": "0.1.0",
   "license": "MIT",
   "author": "Tim Kang <timkang@ucla.edu>",
@@ -18,6 +18,9 @@
     "typescript"
   ],
   "main": "dist/tslintify.js",
+  "files": [
+    "dist/tslintify.js"
+  ],
   "peerDependencies": {
     "browserify": ">=12.0.0",
     "tslint": ">=3.14.0",

@@ -1,6 +1,6 @@
 # tslintify
 
-Browserify plugin for linting TypeScript files.
+Browserify plugin for linting TypeScript.
 
 * [Options](#options)
 * [Usage](#usage)
