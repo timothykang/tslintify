@@ -1,7 +1,7 @@
 {
   "name": "tslintify",
   "description": "Browserify plugin for linting TypeScript.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "author": "Tim Kang <timkang@ucla.edu>",
   "repository": {
@@ -33,9 +33,9 @@
     "typescript": ">=2.0.2"
   },
   "scripts": {
-    "build": "mkdir -p dist && tsc",
+    "build": "tsc",
     "lint": "tslint --force --format=stylish src/tslintify.ts",
     "prepublish": "npm run build",
-    "watch": "mkdir -p dist && tsc --watch"
+    "watch": "tsc --watch"
   }
 }
