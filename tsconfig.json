@@ -1,8 +1,8 @@
 {
-	"compilerOptions": {
-		"outDir": "dist"
-	},
-	"files": [
-		"src/tslintify.ts"
-	]
+    "compilerOptions": {
+        "outDir": "dist"
+    },
+    "files": [
+        "src/tslintify.ts"
+    ]
 }
