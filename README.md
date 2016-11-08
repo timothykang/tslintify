@@ -9,19 +9,20 @@ Browserify plugin for linting TypeScript.
 
 ## Options
 
-Three TSLint options are supported (passed through to TSLint):
+Some TSLint options are supported:
 
+* `-p, --project`
 * `-r, --rules-dir`
 * `-s, --formatters-dir`
 * `-t, --format`
 
-See [TSLint docs](https://github.com/palantir/tslint#cli-1) for more info.
+See [TSLint docs](https://github.com/palantir/tslint#cli-1) for option descriptions.
 
 Linter rules go into `tslint.json` at the project root.
 
 ## Usage
 
-**Note:** If using plugin to transform TypeScript (e.g. `tsify`), `tslintify` must be specified/added first. 
+**Note:** If using plugin to transform TypeScript (e.g. `tsify`), `tslintify` must be specified/added first.
 
 CLI:
 ```sh

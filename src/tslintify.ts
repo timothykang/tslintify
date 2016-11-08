@@ -12,8 +12,8 @@ declare module 'typescript' {
 }
 
 export = function (b: BrowserifyObject, options) {
-    const baseDir = options.basedir || process.cwd();
-    const tsConfigFile = findConfigFile(baseDir, sys.fileExists);
+    const projectDir = options.p || options.project || options.basedir || process.cwd();
+    const tsConfigFile = findConfigFile(projectDir, sys.fileExists);
     const parsed = parseConfigFileTextToJson(tsConfigFile, readFileSync(tsConfigFile, 'UTF-8'));
     const extensions = getSupportedExtensions(parsed.config.compilerOptions) || [];
 
@@ -41,7 +41,7 @@ export = function (b: BrowserifyObject, options) {
 
         transform.on('finish', () => {
             const linter = new Linter(file, buffer.toString(), {
-                configuration: findConfiguration(null, file),
+                configuration: findConfiguration(options.p || options.project, file),
                 formatter: options.t || options.format || 'prose',
                 formattersDirectory: options.s || options['formatters-dir'],
                 rulesDirectory: options.r || options['rules-dir'],
