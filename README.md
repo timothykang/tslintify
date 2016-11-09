@@ -37,6 +37,7 @@ var tslintify = require('tslintify');
 
 browserify()
     .plugin(tslintify, { format: 'stylish' })
+    .plugin(tsify)
     .add('app.ts')
     .bundle()
     ...
