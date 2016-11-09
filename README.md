@@ -1,5 +1,7 @@
 # tslintify
 
+[![Build Status](https://travis-ci.org/timothykang/tslintify.svg?branch=master)](https://travis-ci.org/timothykang/tslintify)
+
 Browserify plugin for linting TypeScript.
 
 * [Options](#options)
