@@ -39,6 +39,7 @@ browserify()
     .plugin(tslintify, { format: 'stylish' })
     .plugin(tsify)
     .add('app.ts')
+    .on('error', error => console.error(error))
     .bundle()
     ...
 ```

@@ -49,7 +49,7 @@ export = function (b: BrowserifyObject, options) {
             const result = linter.lint();
 
             if (result.failureCount) {
-                process.stderr.write(result.output);
+                b.emit('error', result.output);
             }
         });
 
