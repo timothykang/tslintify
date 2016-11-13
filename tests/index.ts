@@ -1,4 +1,5 @@
 import * as browserify from 'browserify';
+import { fork } from 'child_process';
 import * as test from 'tape';
 
 import tslintify = require('../src/tslintify');
@@ -53,4 +54,39 @@ test('project', function (t) {
         .bundle()
         .on('end', () => t.end())
         .resume();
+});
+
+test('warn API', function (t) {
+    t.plan(1);
+
+    browserify()
+        .plugin(tslintify, { warn: true })
+        .add('./tests/lint/dirty.ts')
+        .on('warning', warning => {
+            if (warning.indexOf('[1, 1]: " should be \'') !== -1) {
+                t.pass('quotemark');
+            }
+        })
+        .on('error', () => t.fail('unexpected error'))
+        .bundle()
+        .on('end', () => t.end())
+        .resume();
+});
+
+test('warn CLI', function (t) {
+    t.plan(1);
+
+    const b = fork('node_modules/browserify/bin/cmd', [
+        '-p',
+        '[',
+        './src/tslintify.ts',
+        '--warn',
+        ']',
+        './tests/lint/dirty.ts',
+    ], { silent: true });
+
+    b.on('exit', code => {
+        t[code === 0 ? 'pass' : 'fail'](`exit code: ${code}`);
+        t.end();
+    });
 });

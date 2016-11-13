@@ -11,14 +11,14 @@ Browserify plugin for linting TypeScript.
 
 ## Options
 
-Some TSLint options are supported:
+* `--warn`: Instead of emitting `error`, emit `warning` (when using API) or print error (when using CLI)
+
+Some [TSLint options](https://github.com/palantir/tslint#cli-1) are supported:
 
 * `-p, --project`
 * `-r, --rules-dir`
 * `-s, --formatters-dir`
 * `-t, --format`
-
-See [TSLint docs](https://github.com/palantir/tslint#cli-1) for option descriptions.
 
 Linter rules go into `tslint.json` at the project root.
 

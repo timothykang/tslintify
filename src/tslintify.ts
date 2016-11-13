@@ -46,10 +46,19 @@ export = function (b: BrowserifyObject, options) {
                 formattersDirectory: options.s || options['formatters-dir'],
                 rulesDirectory: options.r || options['rules-dir'],
             });
-            const result = linter.lint();
+            const { failureCount, output } = linter.lint();
 
-            if (result.failureCount) {
-                b.emit('error', result.output);
+            if (failureCount) {
+                if (options.warn) {
+                    if (b.hasOwnProperty('argv')) {
+                        // CLI
+                        console.warn(output);
+                    } else {
+                        b.emit('warning', output);
+                    }
+                } else {
+                    b.emit('error', output);
+                }
             }
         });
 
