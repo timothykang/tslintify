@@ -39,7 +39,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "tslint --force --format=stylish src/tslintify.ts",
-    "prepublish": "npm run build",
+    "prepublish": "npm run test && npm run build",
     "test": "ts-node tests",
     "watch": "tsc --watch"
   }
