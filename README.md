@@ -15,6 +15,7 @@ Browserify plugin for linting TypeScript.
 
 Some [TSLint options](https://github.com/palantir/tslint#cli-1) are supported:
 
+* `--fix`
 * `-p, --project`
 * `-r, --rules-dir`
 * `-s, --formatters-dir`

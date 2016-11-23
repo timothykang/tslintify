@@ -1,26 +1,27 @@
 import * as browserify from 'browserify';
 import { fork } from 'child_process';
+import { readFile, writeFile } from 'fs';
 import * as test from 'tape';
 
 import tslintify = require('../src/tslintify');
 
-test('lint clean', function (t) {
+test('lint clean', (t) => {
     browserify()
         .plugin(tslintify)
         .add('./tests/lint/clean.ts')
-        .on('error', () => t.fail('unexpected error'))
+        .on('error', (error) => t.fail(`unexpected error: ${error}`))
         .bundle()
         .on('end', () => t.end())
         .resume();
 });
 
-test('lint dirty', function (t) {
+test('lint dirty', (t) => {
     t.plan(1);
 
     browserify()
         .plugin(tslintify)
         .add('./tests/lint/dirty.ts')
-        .on('error', error => {
+        .on('error', (error) => {
             if (error.indexOf('[1, 1]: " should be \'') !== -1) {
                 t.pass('quotemark');
             }
@@ -30,13 +31,13 @@ test('lint dirty', function (t) {
         .resume();
 });
 
-test('resolve tslint.json', function (t) {
+test('resolve tslint.json', (t) => {
     t.plan(1);
 
     browserify()
         .plugin(tslintify)
         .add('./tests/tslint-json/dirty.ts')
-        .on('error', error => {
+        .on('error', (error) => {
             if (error.indexOf('[1, 1]: \' should be "') !== -1) {
                 t.pass('quotemark');
             }
@@ -46,7 +47,7 @@ test('resolve tslint.json', function (t) {
         .resume();
 });
 
-test('project', function (t) {
+test('project', (t) => {
     browserify()
         .plugin(tslintify, { project: '.' })
         .add('./tests/tslint-json/dirty.ts')
@@ -56,13 +57,13 @@ test('project', function (t) {
         .resume();
 });
 
-test('warn API', function (t) {
+test('warn API', (t) => {
     t.plan(1);
 
     browserify()
         .plugin(tslintify, { warn: true })
         .add('./tests/lint/dirty.ts')
-        .on('warning', warning => {
+        .on('warning', (warning) => {
             if (warning.indexOf('[1, 1]: " should be \'') !== -1) {
                 t.pass('quotemark');
             }
@@ -73,7 +74,7 @@ test('warn API', function (t) {
         .resume();
 });
 
-test('warn CLI', function (t) {
+test('warn CLI', (t) => {
     t.plan(1);
 
     const b = fork('node_modules/browserify/bin/cmd', [
@@ -85,8 +86,34 @@ test('warn CLI', function (t) {
         './tests/lint/dirty.ts',
     ], { silent: true });
 
-    b.on('exit', code => {
+    b.on('exit', (code) => {
         t[code === 0 ? 'pass' : 'fail'](`exit code: ${code}`);
         t.end();
+    });
+});
+
+test('fix', (t) => {
+    t.plan(2);
+
+    const FILE = './tests/fix/dirty.ts';
+    const DIRTY = "'dirty'\n";
+    const CLEAN = "'dirty';\n";
+
+    readFile(FILE, (dirtyError, dirtyContents) => {
+        t.equal(dirtyContents.toString(), DIRTY);
+
+        browserify()
+            .plugin(tslintify, { fix: true })
+            .add(FILE)
+            .on('error', (error) => t.fail(`unexpected error: ${error}`))
+            .bundle()
+            .on('end', () => {
+                readFile(FILE, (cleanError, cleanContents) => {
+                    t.equal(cleanContents.toString(), CLEAN);
+
+                    writeFile(FILE, DIRTY, () => t.end());
+                });
+            })
+            .resume();
     });
 });

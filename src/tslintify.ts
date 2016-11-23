@@ -1,7 +1,7 @@
 import { BrowserifyObject, InputFile } from 'browserify';
 import { readFileSync } from 'fs';
 import { PassThrough, Transform } from 'stream';
-import * as Linter from 'tslint';
+import { Linter } from 'tslint';
 import { findConfiguration } from 'tslint/lib/configuration';
 import { findConfigFile, getSupportedExtensions, parseConfigFileTextToJson, sys } from 'typescript';
 
@@ -16,6 +16,12 @@ export = function (b: BrowserifyObject, options) {
     const tsConfigFile = findConfigFile(projectDir, sys.fileExists);
     const parsed = parseConfigFileTextToJson(tsConfigFile, readFileSync(tsConfigFile, 'UTF-8'));
     const extensions = getSupportedExtensions(parsed.config.compilerOptions) || [];
+    const linter = new Linter({
+        fix: !!options.fix,
+        formatter: options.t || options.format || 'prose',
+        formattersDirectory: options.s || options['formatters-dir'],
+        rulesDirectory: options.r || options['rules-dir'],
+    });
 
     b.transform(function (file: InputFile) {
         if (
@@ -23,6 +29,13 @@ export = function (b: BrowserifyObject, options) {
             file.lastIndexOf('.') === -1 ||
             extensions.indexOf(file.slice(file.lastIndexOf('.'))) === -1
         ) {
+            return new PassThrough();
+        }
+
+        const configuration = findConfiguration(options.p || options.project, file);
+
+        if (configuration.error) {
+            b.emit('error', `Failed to find TSLint configuration for ${file}`);
             return new PassThrough();
         }
 
@@ -40,13 +53,9 @@ export = function (b: BrowserifyObject, options) {
         });
 
         transform.on('finish', () => {
-            const linter = new Linter(file, buffer.toString(), {
-                configuration: findConfiguration(options.p || options.project, file),
-                formatter: options.t || options.format || 'prose',
-                formattersDirectory: options.s || options['formatters-dir'],
-                rulesDirectory: options.r || options['rules-dir'],
-            });
-            const { failureCount, output } = linter.lint();
+            linter.lint(file, buffer.toString(), configuration.results);
+
+            const { failureCount, output } = linter.getResult();
 
             if (failureCount) {
                 if (options.warn) {
