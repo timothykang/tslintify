@@ -7,11 +7,10 @@ import { findConfigFile, getSupportedExtensions, parseConfigFileTextToJson, sys 
 
 declare module 'typescript' {
     // stub method missing from typescript.d.ts
-    // tslint:disable-next-line:no-unused-variable
     function getSupportedExtensions(options): string[];
 }
 
-export = function (b: BrowserifyObject, options) {
+export = (b: BrowserifyObject, options) => {
     const projectDir = options.p || options.project || options.basedir || process.cwd();
     const tsConfigFile = findConfigFile(projectDir, sys.fileExists);
     const parsed = parseConfigFileTextToJson(tsConfigFile, readFileSync(tsConfigFile, 'UTF-8'));
@@ -23,7 +22,7 @@ export = function (b: BrowserifyObject, options) {
         rulesDirectory: options.r || options['rules-dir'],
     });
 
-    b.transform(function (file: InputFile) {
+    b.transform((file: InputFile) => {
         if (
             typeof file !== 'string' ||
             file.lastIndexOf('.') === -1 ||
@@ -32,9 +31,11 @@ export = function (b: BrowserifyObject, options) {
             return new PassThrough();
         }
 
-        const configuration = findConfiguration(options.p || options.project, file);
+        let configuration;
 
-        if (configuration.error) {
+        try {
+            configuration = findConfiguration(options.p || options.project, file);
+        } catch (error) {
             b.emit('error', `Failed to find TSLint configuration for ${file}`);
             return new PassThrough();
         }

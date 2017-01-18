@@ -23,7 +23,7 @@
   ],
   "peerDependencies": {
     "browserify": ">=12.0.0",
-    "tslint": ">=4.0.0",
+    "tslint": "^4.0.0",
     "typescript": ">=2.0.2"
   },
   "devDependencies": {
@@ -33,8 +33,8 @@
     "browserify": ">=12.0.0",
     "tape": "^4.6.2",
     "ts-node": "^1.7.0",
-    "tslint": ">=3.14.0",
-    "typescript": ">=2.0.2"
+    "tslint": "^4.0.0",
+    "typescript": "^2.1.0"
   },
   "scripts": {
     "build": "tsc",

@@ -2,6 +2,7 @@
     "extends": "tslint:recommended",
     "rules": {
         "ordered-imports": true,
-        "quotemark": [true, "single", "avoid-escape"]
+        "quotemark": [true, "single", "avoid-escape"],
+        "variable-name": ["true", "allow-leading-underscore"]
     }
 }

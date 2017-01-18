@@ -1,9 +1,31 @@
 import * as browserify from 'browserify';
 import { fork } from 'child_process';
 import { readFile, writeFile } from 'fs';
+import { PassThrough } from 'stream';
 import * as test from 'tape';
 
 import tslintify = require('../src/tslintify');
+
+test('passthrough on config error', (t) => {
+    t.plan(2);
+
+    browserify()
+        .plugin(tslintify)
+        .add('./tests/bad-config/empty.ts')
+        .on('error', (error) => {
+            if (error.indexOf('Failed to find TSLint configuration for ') !== -1) {
+                t.pass('error');
+            }
+        })
+        .on('transform', (transform) => {
+            if (transform instanceof PassThrough) {
+                t.pass('transform');
+            }
+        })
+        .bundle()
+        .on('end', () => t.end())
+        .resume();
+});
 
 test('lint clean', (t) => {
     browserify()
@@ -99,7 +121,7 @@ test('fix', (t) => {
     const DIRTY = "'dirty'\n";
     const CLEAN = "'dirty';\n";
 
-    readFile(FILE, (dirtyError, dirtyContents) => {
+    readFile(FILE, (_dirtyError, dirtyContents) => {
         t.equal(dirtyContents.toString(), DIRTY);
 
         browserify()
@@ -108,7 +130,7 @@ test('fix', (t) => {
             .on('error', (error) => t.fail(`unexpected error: ${error}`))
             .bundle()
             .on('end', () => {
-                readFile(FILE, (cleanError, cleanContents) => {
+                readFile(FILE, (_cleanError, cleanContents) => {
                     t.equal(cleanContents.toString(), CLEAN);
 
                     writeFile(FILE, DIRTY, () => t.end());
