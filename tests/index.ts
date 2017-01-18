@@ -73,7 +73,7 @@ test('project', (t) => {
     browserify()
         .plugin(tslintify, { project: '.' })
         .add('./tests/tslint-json/dirty.ts')
-        .on('error', () => t.fail('unexpected error'))
+        .on('error', (error) => t.fail(`unexpected error: ${error}`))
         .bundle()
         .on('end', () => t.end())
         .resume();
@@ -90,7 +90,7 @@ test('warn API', (t) => {
                 t.pass('quotemark');
             }
         })
-        .on('error', () => t.fail('unexpected error'))
+        .on('error', (error) => t.fail(`unexpected error: ${error}`))
         .bundle()
         .on('end', () => t.end())
         .resume();
