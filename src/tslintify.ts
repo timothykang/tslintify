@@ -15,14 +15,15 @@ export = (b: BrowserifyObject, options) => {
     const tsConfigFile = findConfigFile(projectDir, sys.fileExists);
     const parsed = parseConfigFileTextToJson(tsConfigFile, readFileSync(tsConfigFile, 'UTF-8'));
     const extensions = getSupportedExtensions(parsed.config.compilerOptions) || [];
-    const linter = new Linter({
-        fix: !!options.fix,
-        formatter: options.t || options.format || 'prose',
-        formattersDirectory: options.s || options['formatters-dir'],
-        rulesDirectory: options.r || options['rules-dir'],
-    });
 
     b.transform((file: InputFile) => {
+        const linter = new Linter({
+            fix: !!options.fix,
+            formatter: options.t || options.format || 'prose',
+            formattersDirectory: options.s || options['formatters-dir'],
+            rulesDirectory: options.r || options['rules-dir'],
+        });
+        
         if (
             typeof file !== 'string' ||
             file.lastIndexOf('.') === -1 ||
